@@ -84,11 +84,11 @@ int main(int argc, char **argv) {
   local_info = (GraphMetaInfo *)calloc(local_num_graphs, sizeof(GraphMetaInfo));
   if (my_rank == 0)
   {
-    MPI_Scatter(info, 3, graph_type, local_info, 3, graph_type, 0, comm);
+    MPI_Scatter(info, local_num_graphs, graph_type, local_info, local_num_graphs, graph_type, 0, comm);
   }
   else 
   {
-    MPI_Scatter(info, 3, graph_type, local_info, 3, graph_type, 0, comm);
+    MPI_Scatter(info, local_num_graphs, graph_type, local_info, local_num_graphs, graph_type, 0, comm);
   }
   
   // Calculate local number of vertices and edges for each process
@@ -186,11 +186,11 @@ int main(int argc, char **argv) {
   if (my_rank == 0) {
     num_cluster_total = (int*)calloc(num_graphs, sizeof(int));
     clustering_results = (int*)calloc(length_clustering_results_overall, sizeof(int));
-    MPI_Gather(local_num_cluster, 3, MPI_INT, num_cluster_total, 3, MPI_INT, 0, comm);
+    MPI_Gather(local_num_cluster, local_num_graphs, MPI_INT, num_cluster_total, local_num_graphs, MPI_INT, 0, comm);
     MPI_Gatherv(local_clustering_results, local_space_v, MPI_INT, clustering_results, clustering_results_recvcounts, clustering_results_displs,  MPI_INT, 0, comm);
   }
   else {
-    MPI_Gather(local_num_cluster, 3, MPI_INT, num_cluster_total, 3, MPI_INT, 0, comm);
+    MPI_Gather(local_num_cluster, local_num_graphs, MPI_INT, num_cluster_total, local_num_graphs, MPI_INT, 0, comm);
     MPI_Gatherv(local_clustering_results, local_space_v, MPI_INT, clustering_results, clustering_results_recvcounts, clustering_results_displs, MPI_INT, 0, comm);
   }
   // Finalize my code part *************
